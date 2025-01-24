@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit CVE Rule</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #121212;
+            color: #fff;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 30px;
+            color: #fff;
+        }
+
+        .container {
+            width: 60%;
+            margin: 0 auto;
+            background-color: #1e1e1e;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .flash-message {
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .flash-error {
+            background-color: #f44336;
+            color: white;
+        }
+
+        .flash-success {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        label {
+            color: #ddd;
+        }
+
+        input, textarea, select {
+            padding: 10px;
+            background-color: #333;
+            color: #fff;
+            border: 1px solid #555;
+            border-radius: 4px;
+        }
+
+        input[type="submit"] {
+            background-color: #28a745;
+            color: white;
+            padding: 10px 15px;
+            cursor: pointer;
+            border: none;
+            border-radius: 4px;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #218838;
+        }
+
+    </style>
+</head>
+<body>
+
+    <h1>Edit CVE Rule</h1>
+
+    <div class="container">
+        <!-- Flash messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash-message {% if category == 'error' %}flash-error{% else %}flash-success{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <!-- Form to edit CVE -->
+        <form action="/edit/{{ cve.cve_id }}" method="POST">
+            <label for="cve_id">CVE ID:</label>
+            <input type="text" id="cve_id" name="cve_id" value="{{ cve.cve_id }}" required><br><br>
+            
+            <label for="rule_name">Rule Name:</label>
+            <input type="text" id="rule_name" name="rule_name" value="{{ cve.rule_name }}" required><br><br>
+            
+            <label for="cve_description">CVE Description:</label>
+            <textarea id="cve_description" name="cve_description" required>{{ cve.cve_description }}</textarea><br><br>
+            
+            <label for="severity">Severity:</label>
+            <select id="severity" name="severity" required>
+                <option value="Critical" {% if cve.severity == 'Critical' %}selected{% endif %}>Critical</option>
+                <option value="High" {% if cve.severity == 'High' %}selected{% endif %}>High</option>
+                <option value="Medium" {% if cve.severity == 'Medium' %}selected{% endif %}>Medium</option>
+                <option value="Low" {% if cve.severity == 'Low' %}selected{% endif %}>Low</option>
+            </select><br><br>
+            
+            <label for="correlation_logic">Correlation Logic:</label>
+            <input type="text" id="correlation_logic" name="correlation_logic" value="{{ cve.correlation_logic }}" required><br><br>
+            
+            <label for="created_by">Created By:</label>
+            <input type="text" id="created_by" name="created_by" value="{{ cve.created_by }}" required><br><br>
+            
+            <input type="submit" value="Save Changes">
+        </form>
+    </div>
+
+</body>
+</html>
